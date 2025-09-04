@@ -844,4 +844,113 @@
         });
     </script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'979f00df6739f271',t:'MTc1NzAwNDgxMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<!-- Add this inside <body>, maybe at the bottom -->
+<audio id="audioPlayer" preload="auto"></audio>
+
+<script>
+    const audioPlayer = document.getElementById('audioPlayer');
+
+    const sessionData = {
+        calming: {
+            title: "Calming Session",
+            icon: "🧘",
+            tracks: [
+                { name: "Peaceful Piano", url: "music/peaceful-piano.mp3" },
+                { name: "Nature Sounds", url: "music/nature-sounds.mp3" },
+                { name: "Soft Strings", url: "music/soft-strings.mp3" },
+                { name: "Gentle Waves", url: "music/gentle-waves.mp3" }
+            ],
+            description: "Designed to reduce agitation and promote relaxation"
+        },
+        memory: {
+            title: "Memory Stimulation",
+            icon: "🧠",
+            tracks: [
+                { name: "Moon River", url: "music/moon-river.mp3" },
+                { name: "Blue Moon", url: "music/blue-moon.mp3" },
+                { name: "Singin' in the Rain", url: "music/singin-rain.mp3" },
+                { name: "White Christmas", url: "music/white-christmas.mp3" }
+            ],
+            description: "Familiar songs from the patient's era to trigger positive memories"
+        },
+        social: {
+            title: "Social Engagement",
+            icon: "👥",
+            tracks: [
+                { name: "Clap Along Songs", url: "music/clap-along.mp3" },
+                { name: "Simple Sing-Alongs", url: "music/sing-alongs.mp3" },
+                { name: "Rhythm Activities", url: "music/rhythm.mp3" },
+                { name: "Group Participation", url: "music/group-participation.mp3" }
+            ],
+            description: "Interactive music activities to encourage participation"
+        }
+    };
+
+    function startSession(type) {
+        currentSession = type;
+        currentTrack = 0;
+        sessionDuration = 0;
+
+        const session = sessionData[type];
+        const sessionContent = document.getElementById('sessionContent');
+        const sessionControls = document.getElementById('sessionControls');
+
+        sessionContent.innerHTML = `
+            <div class="w-24 h-24 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="text-4xl">${session.icon}</span>
+            </div>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">${session.title}</h3>
+            <p class="text-gray-600 mb-4">${session.description}</p>
+            <div class="text-sm font-medium text-indigo-600">Now Playing: ${session.tracks[currentTrack].name}</div>
+        `;
+
+        sessionControls.classList.remove('hidden');
+
+        playTrack();
+    }
+
+    function playTrack() {
+        const session = sessionData[currentSession];
+        const track = session.tracks[currentTrack];
+        audioPlayer.src = track.url;
+        audioPlayer.play();
+        isPlaying = true;
+
+        document.getElementById('playPauseBtn').innerHTML = '<span class="text-2xl">⏸️</span>';
+        showNotification(`Now playing: ${track.name}`, 'success');
+    }
+
+    function togglePlayPause() {
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        if (isPlaying) {
+            audioPlayer.pause();
+            isPlaying = false;
+            playPauseBtn.innerHTML = '<span class="text-2xl">▶️</span>';
+            showNotification('Music paused', 'info');
+        } else {
+            audioPlayer.play();
+            isPlaying = true;
+            playPauseBtn.innerHTML = '<span class="text-2xl">⏸️</span>';
+            showNotification('Music playing', 'info');
+        }
+    }
+
+    function nextTrack() {
+        const session = sessionData[currentSession];
+        currentTrack = (currentTrack + 1) % session.tracks.length;
+        playTrack();
+    }
+
+    function previousTrack() {
+        const session = sessionData[currentSession];
+        currentTrack = (currentTrack - 1 + session.tracks.length) % session.tracks.length;
+        playTrack();
+    }
+
+    function adjustVolume(value) {
+        audioPlayer.volume = value / 100;
+        showNotification(`Volume set to ${value}%`, 'info');
+    }
+</script>
+
 </html>
