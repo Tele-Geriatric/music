@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindfulTunes - Therapeutic Music for Dementia Care</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .gradient-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .gradient-memory {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .gradient-social {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        
+        .colorful-bg {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .progress-bar {
+            transition: width 0.3s ease;
+        }
+        
+        .music-wave {
+            display: inline-block;
+            width: 4px;
+            height: 20px;
+            background: #4f46e5;
+            margin: 0 1px;
+            animation: wave 1.5s infinite ease-in-out;
+        }
+        
+        .music-wave:nth-child(2) { animation-delay: 0.1s; }
+        .music-wave:nth-child(3) { animation-delay: 0.2s; }
+        .music-wave:nth-child(4) { animation-delay: 0.3s; }
+        .music-wave:nth-child(5) { animation-delay: 0.4s; }
+        
+        @keyframes wave {
+            0%, 40%, 100% { transform: scaleY(0.4); }
+            20% { transform: scaleY(1); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                        <span class="text-2xl">🎵</span>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold">MindfulTunes</h1>
+                        <p class="text-sm opacity-90">Therapeutic Music for Dementia Care</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="caregiverModeBtn" onclick="switchMode('caregiver')" class="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition-all">
+                        👤 Caregiver Mode
+                    </button>
+                    <button id="therapistModeBtn" onclick="switchMode('therapist')" class="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition-all">
+                        🩺 Therapist Mode
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Quick Actions -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="gradient-card text-white rounded-xl shadow-lg p-6 card-hover cursor-pointer" onclick="startSession('calming')">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                        <span class="text-2xl">🧘</span>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-white">Calming Session</h3>
+                        <p class="text-sm text-white text-opacity-90">Reduce agitation & anxiety</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="gradient-memory text-white rounded-xl shadow-lg p-6 card-hover cursor-pointer" onclick="startSession('memory')">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                        <span class="text-2xl">🧠</span>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-white">Memory Stimulation</h3>
+                        <p class="text-sm text-white text-opacity-90">Familiar songs & reminiscence</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="gradient-social text-white rounded-xl shadow-lg p-6 card-hover cursor-pointer" onclick="startSession('social')">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                        <span class="text-2xl">👥</span>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-white">Social Engagement</h3>
+                        <p class="text-sm text-white text-opacity-90">Interactive music activities</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Main Content -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Current Session -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-semibold text-gray-900">Current Session</h2>
+                        <div class="flex items-center space-x-2">
+                            <div class="music-wave"></div>
+                            <div class="music-wave"></div>
+                            <div class="music-wave"></div>
+                            <div class="music-wave"></div>
+                            <div class="music-wave"></div>
+                        </div>
+                    </div>
+                    
+                    <div id="sessionContent" class="text-center py-8">
+                        <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-4xl">🎼</span>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Select a session type to begin</h3>
+                        <p class="text-gray-600">Choose from calming, memory stimulation, or social engagement activities</p>
+                    </div>
+                    
+                    <!-- Session Controls -->
+                    <div id="sessionControls" class="hidden">
+                        <div class="flex items-center justify-center space-x-4 mb-6">
+                            <button onclick="previousTrack()" class="w-12 h-12 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-all">
+                                <span class="text-xl">⏮️</span>
+                            </button>
+                            <button id="playPauseBtn" onclick="togglePlayPause()" class="w-16 h-16 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full flex items-center justify-center transition-all">
+                                <span class="text-2xl">▶️</span>
+                            </button>
+                            <button onclick="nextTrack()" class="w-12 h-12 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-all">
+                                <span class="text-xl">⏭️</span>
+                            </button>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="flex justify-between text-sm text-gray-600 mb-1">
+                                <span id="currentTime">0:00</span>
+                                <span id="totalTime">3:45</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div id="progressBar" class="bg-indigo-600 h-2 rounded-full progress-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm text-gray-600">Volume:</span>
+                                <input type="range" id="volumeSlider" min="0" max="100" value="70" class="w-24" onchange="adjustVolume(this.value)">
+                            </div>
+                            <button onclick="endSession()" class="px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition-all">
+                                End Session
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Evidence-Based Interventions -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Evidence-Based Interventions</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h3 class="font-medium text-gray-900 mb-2">🎵 Personalized Playlists</h3>
+                            <p class="text-sm text-gray-600 mb-3">Music from patient's era and preferences</p>
+                            <div class="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded">Reduces agitation by 40%</div>
+                        </div>
+                        
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h3 class="font-medium text-gray-900 mb-2">🎤 Singing Therapy</h3>
+                            <p class="text-sm text-gray-600 mb-3">Interactive singing and humming activities</p>
+                            <div class="text-xs text-green-600 bg-green-50 px-2 py-1 rounded">Improves mood & communication</div>
+                        </div>
+                        
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h3 class="font-medium text-gray-900 mb-2">🥁 Rhythm Therapy</h3>
+                            <p class="text-sm text-gray-600 mb-3">Simple percussion and movement</p>
+                            <div class="text-xs text-purple-600 bg-purple-50 px-2 py-1 rounded">Enhances motor function</div>
+                        </div>
+                        
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h3 class="font-medium text-gray-900 mb-2">🎼 Classical Therapy</h3>
+                            <p class="text-sm text-gray-600 mb-3">Structured classical music sessions</p>
+                            <div class="text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded">Reduces anxiety & stress</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New Features -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Mood Tracker -->
+                    <div class="bg-white rounded-xl shadow-md p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">🎭 Mood Tracker</h3>
+                        <div class="grid grid-cols-5 gap-2 mb-4">
+                            <button onclick="setMood('😢', 'Very Sad')" class="p-3 text-2xl hover:bg-gray-100 rounded-lg transition-all">😢</button>
+                            <button onclick="setMood('😔', 'Sad')" class="p-3 text-2xl hover:bg-gray-100 rounded-lg transition-all">😔</button>
+                            <button onclick="setMood('😐', 'Neutral')" class="p-3 text-2xl hover:bg-gray-100 rounded-lg transition-all">😐</button>
+                            <button onclick="setMood('😊', 'Happy')" class="p-3 text-2xl hover:bg-gray-100 rounded-lg transition-all">😊</button>
+                            <button onclick="setMood('😄', 'Very Happy')" class="p-3 text-2xl hover:bg-gray-100 rounded-lg transition-all">😄</button>
+                        </div>
+                        <div id="currentMood" class="text-center text-sm text-gray-600">Current mood: Not set</div>
+                    </div>
+
+                    <!-- Music Recommendations -->
+                    <div class="bg-white rounded-xl shadow-md p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">🎵 Smart Recommendations</h3>
+                        <div id="recommendations" class="space-y-2">
+                            <div class="p-3 bg-blue-50 rounded-lg cursor-pointer hover:bg-blue-100 transition-all" onclick="playRecommendation('Morning Classical')">
+                                <div class="font-medium text-sm">Morning Classical</div>
+                                <div class="text-xs text-gray-600">Based on time of day</div>
+                            </div>
+                            <div class="p-3 bg-green-50 rounded-lg cursor-pointer hover:bg-green-100 transition-all" onclick="playRecommendation('Familiar Favorites')">
+                                <div class="font-medium text-sm">Familiar Favorites</div>
+                                <div class="text-xs text-gray-600">From your era preferences</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Analytics -->
+                    <div class="bg-white rounded-xl shadow-md p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">📊 Progress Analytics</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">Sessions this week:</span>
+                                <span class="font-semibold text-indigo-600">12</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">Avg. session length:</span>
+                                <span class="font-semibold text-green-600">15 min</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">Mood improvement:</span>
+                                <span class="font-semibold text-purple-600">+23%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Emergency Playlist -->
+                    <div class="bg-white rounded-xl shadow-md p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">🚨 Emergency Playlist</h3>
+                        <p class="text-sm text-gray-600 mb-4">Quick access for agitation episodes</p>
+                        <button onclick="startEmergencyPlaylist()" class="w-full px-4 py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-all">
+                            🎵 Start Emergency Calming
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="space-y-6">
+                <!-- Patient Profile -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Patient Profile</h3>
+                    <div id="profileView" class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Age:</span>
+                            <span class="text-sm font-medium" id="profileAge">78 years</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Stage:</span>
+                            <span class="text-sm font-medium" id="profileStage">Moderate</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Music Era:</span>
+                            <span class="text-sm font-medium" id="profileEra">1950s-1960s</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Preferences:</span>
+                            <span class="text-sm font-medium" id="profilePrefs">Jazz, Classical</span>
+                        </div>
+                    </div>
+                    
+                    <div id="profileEdit" class="space-y-3 hidden">
+                        <div>
+                            <label class="text-sm text-gray-600">Age:</label>
+                            <input type="text" id="editAge" class="w-full mt-1 p-2 border rounded-lg text-sm" value="78 years">
+                        </div>
+                        <div>
+                            <label class="text-sm text-gray-600">Stage:</label>
+                            <select id="editStage" class="w-full mt-1 p-2 border rounded-lg text-sm">
+                                <option value="Mild">Mild</option>
+                                <option value="Moderate" selected>Moderate</option>
+                                <option value="Severe">Severe</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-sm text-gray-600">Music Era:</label>
+                            <input type="text" id="editEra" class="w-full mt-1 p-2 border rounded-lg text-sm" value="1950s-1960s">
+                        </div>
+                        <div>
+                            <label class="text-sm text-gray-600">Preferences:</label>
+                            <input type="text" id="editPrefs" class="w-full mt-1 p-2 border rounded-lg text-sm" value="Jazz, Classical">
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-2 mt-4">
+                        <button id="editProfileBtn" onclick="toggleProfileEdit()" class="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-all">
+                            Edit Profile
+                        </button>
+                        <button id="saveProfileBtn" onclick="saveProfile()" class="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all hidden">
+                            Save Changes
+                        </button>
+                        <button id="cancelProfileBtn" onclick="cancelProfileEdit()" class="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-all hidden">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Session History -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Recent Sessions</h3>
+                    <div id="sessionHistory" class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div>
+                                <div class="text-sm font-medium">Calming Session</div>
+                                <div class="text-xs text-gray-600">Today, 2:30 PM</div>
+                            </div>
+                            <div class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">Effective</div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div>
+                                <div class="text-sm font-medium">Memory Stimulation</div>
+                                <div class="text-xs text-gray-600">Yesterday, 10:15 AM</div>
+                            </div>
+                            <div class="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded">Good Response</div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div>
+                                <div class="text-sm font-medium">Social Engagement</div>
+                                <div class="text-xs text-gray-600">2 days ago, 3:45 PM</div>
+                            </div>
+                            <div class="text-xs text-purple-600 bg-purple-100 px-2 py-1 rounded">Participated</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Saved Notes -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Saved Notes</h3>
+                    <div id="savedNotesList" class="space-y-3">
+                        <div class="text-sm text-gray-500 text-center py-4">No notes saved yet</div>
+                    </div>
+                </div>
+
+                <!-- Quick Notes -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Session Notes</h3>
+                    <textarea id="sessionNotes" placeholder="Add observations about patient response, mood changes, or behavioral improvements..." class="w-full h-24 p-3 border border-gray-200 rounded-lg text-sm resize-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"></textarea>
+                    <button onclick="saveNotes()" class="w-full mt-3 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-all">
+                        Save Notes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSession = null;
+        let isPlaying = false;
+        let currentTrack = 0;
+        let sessionTimer = null;
+        let sessionDuration = 0;
+        let savedNotes = [];
+        let currentMood = null;
+        let currentMode = 'caregiver';
+
+        const sessionData = {
+            calming: {
+                title: "Calming Session",
+                icon: "🧘",
+                tracks: ["Peaceful Piano", "Nature Sounds", "Soft Strings", "Gentle Waves"],
+                description: "Designed to reduce agitation and promote relaxation"
+            },
+            memory: {
+                title: "Memory Stimulation",
+                icon: "🧠",
+                tracks: ["Moon River", "Blue Moon", "Singin' in the Rain", "White Christmas"],
+                description: "Familiar songs from the patient's era to trigger positive memories"
+            },
+            social: {
+                title: "Social Engagement",
+                icon: "👥",
+                tracks: ["Clap Along Songs", "Simple Sing-Alongs", "Rhythm Activities", "Group Participation"],
+                description: "Interactive music activities to encourage participation"
+            }
+        };
+
+        function startSession(type) {
+            currentSession = type;
+            currentTrack = 0;
+            sessionDuration = 0;
+            
+            const session = sessionData[type];
+            const sessionContent = document.getElementById('sessionContent');
+            const sessionControls = document.getElementById('sessionControls');
+            
+            sessionContent.innerHTML = `
+                <div class="w-24 h-24 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-4xl">${session.icon}</span>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">${session.title}</h3>
+                <p class="text-gray-600 mb-4">${session.description}</p>
+                <div class="text-sm font-medium text-indigo-600">Now Playing: ${session.tracks[currentTrack]}</div>
+            `;
+            
+            sessionControls.classList.remove('hidden');
+            
+            // Update play button to show pause state
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            playPauseBtn.innerHTML = '<span class="text-2xl">⏸️</span>';
+            
+            // Start session timer (only if playing)
+            isPlaying = true;
+            sessionTimer = setInterval(() => {
+                if (isPlaying) {
+                    sessionDuration++;
+                    updateProgress();
+                }
+            }, 1000);
+            
+            showNotification(`Started ${session.title}`, 'success');
+        }
+
+        function togglePlayPause() {
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            isPlaying = !isPlaying;
+            
+            if (isPlaying) {
+                playPauseBtn.innerHTML = '<span class="text-2xl">⏸️</span>';
+                showNotification('Music playing', 'info');
+            } else {
+                playPauseBtn.innerHTML = '<span class="text-2xl">▶️</span>';
+                showNotification('Music paused', 'info');
+            }
+        }
+
+        function previousTrack() {
+            if (currentSession && currentTrack > 0) {
+                currentTrack--;
+                updateCurrentTrack();
+                showNotification('Previous track', 'info');
+            } else if (currentSession) {
+                // Go to last track if at beginning
+                currentTrack = sessionData[currentSession].tracks.length - 1;
+                updateCurrentTrack();
+                showNotification('Previous track', 'info');
+            }
+        }
+
+        function nextTrack() {
+            if (currentSession && currentTrack < sessionData[currentSession].tracks.length - 1) {
+                currentTrack++;
+                updateCurrentTrack();
+                showNotification('Next track', 'info');
+            } else if (currentSession) {
+                // Go to first track if at end
+                currentTrack = 0;
+                updateCurrentTrack();
+                showNotification('Next track', 'info');
+            }
+        }
+
+        function updateCurrentTrack() {
+            const session = sessionData[currentSession];
+            const trackInfo = document.querySelector('.text-indigo-600');
+            if (trackInfo) {
+                trackInfo.textContent = `Now Playing: ${session.tracks[currentTrack]}`;
+            }
+            showNotification(`Now playing: ${session.tracks[currentTrack]}`, 'info');
+        }
+
+        function adjustVolume(value) {
+            // Simulate audio feedback
+            if (isPlaying && currentSession) {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+                gainNode.gain.setValueAtTime(value / 1000, audioContext.currentTime);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.1);
+            }
+            showNotification(`Volume set to ${value}%`, 'info');
+        }
+
+        function updateProgress() {
+            const minutes = Math.floor(sessionDuration / 60);
+            const seconds = sessionDuration % 60;
+            const currentTime = document.getElementById('currentTime');
+            const progressBar = document.getElementById('progressBar');
+            
+            if (currentTime) {
+                currentTime.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }
+            
+            // Simulate progress for current track (3:45 per track)
+            const trackDuration = 225; // 3:45 in seconds
+            const trackProgress = sessionDuration % trackDuration;
+            const progress = (trackProgress / trackDuration) * 100;
+            
+            if (progressBar) {
+                progressBar.style.width = `${progress}%`;
+            }
+            
+            // Auto-advance to next track when current track ends
+            if (trackProgress === 0 && sessionDuration > 0 && currentSession) {
+                const session = sessionData[currentSession];
+                if (currentTrack < session.tracks.length - 1) {
+                    currentTrack++;
+                    updateCurrentTrack();
+                } else {
+                    // Loop back to first track
+                    currentTrack = 0;
+                    updateCurrentTrack();
+                }
+            }
+        }
+
+        function endSession() {
+            if (sessionTimer) {
+                clearInterval(sessionTimer);
+                sessionTimer = null;
+            }
+            
+            // Calculate session duration for display
+            const minutes = Math.floor(sessionDuration / 60);
+            const seconds = sessionDuration % 60;
+            const durationText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            currentSession = null;
+            isPlaying = false;
+            currentTrack = 0;
+            
+            const sessionContent = document.getElementById('sessionContent');
+            const sessionControls = document.getElementById('sessionControls');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            
+            // Reset play button
+            playPauseBtn.innerHTML = '<span class="text-2xl">▶️</span>';
+            
+            // Reset progress bar
+            const progressBar = document.getElementById('progressBar');
+            const currentTime = document.getElementById('currentTime');
+            if (progressBar) progressBar.style.width = '0%';
+            if (currentTime) currentTime.textContent = '0:00';
+            
+            sessionContent.innerHTML = `
+                <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-4xl">✅</span>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">Session Completed</h3>
+                <p class="text-gray-600">Duration: ${durationText} • Session logged for review</p>
+            `;
+            
+            sessionControls.classList.add('hidden');
+            sessionDuration = 0;
+            
+            showNotification('Session ended and logged', 'success');
+            
+            // Reset after 3 seconds
+            setTimeout(() => {
+                sessionContent.innerHTML = `
+                    <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-4xl">🎼</span>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Select a session type to begin</h3>
+                    <p class="text-gray-600">Choose from calming, memory stimulation, or social engagement activities</p>
+                `;
+            }, 3000);
+        }
+
+        function saveNotes() {
+            const notes = document.getElementById('sessionNotes').value;
+            if (notes.trim()) {
+                const timestamp = new Date().toLocaleString();
+                const noteEntry = {
+                    text: notes.trim(),
+                    timestamp: timestamp,
+                    session: currentSession || 'General'
+                };
+                
+                savedNotes.unshift(noteEntry);
+                updateSavedNotesList();
+                
+                showNotification('Notes saved successfully', 'success');
+                document.getElementById('sessionNotes').value = '';
+            } else {
+                showNotification('Please enter some notes first', 'warning');
+            }
+        }
+
+        function updateSavedNotesList() {
+            const notesList = document.getElementById('savedNotesList');
+            
+            if (savedNotes.length === 0) {
+                notesList.innerHTML = '<div class="text-sm text-gray-500 text-center py-4">No notes saved yet</div>';
+                return;
+            }
+            
+            notesList.innerHTML = savedNotes.slice(0, 5).map(note => `
+                <div class="p-3 bg-gray-50 rounded-lg">
+                    <div class="text-sm text-gray-900 mb-1">${note.text}</div>
+                    <div class="text-xs text-gray-500">${note.timestamp} • ${note.session}</div>
+                </div>
+            `).join('');
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg text-white z-50 transition-all transform translate-x-full`;
+            
+            switch(type) {
+                case 'success':
+                    notification.classList.add('bg-green-500');
+                    break;
+                case 'warning':
+                    notification.classList.add('bg-yellow-500');
+                    break;
+                case 'info':
+                    notification.classList.add('bg-blue-500');
+                    break;
+                default:
+                    notification.classList.add('bg-gray-500');
+            }
+            
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Profile editing functions
+        function toggleProfileEdit() {
+            const profileView = document.getElementById('profileView');
+            const profileEdit = document.getElementById('profileEdit');
+            const editBtn = document.getElementById('editProfileBtn');
+            const saveBtn = document.getElementById('saveProfileBtn');
+            const cancelBtn = document.getElementById('cancelProfileBtn');
+            
+            profileView.classList.add('hidden');
+            profileEdit.classList.remove('hidden');
+            editBtn.classList.add('hidden');
+            saveBtn.classList.remove('hidden');
+            cancelBtn.classList.remove('hidden');
+        }
+
+        function saveProfile() {
+            const age = document.getElementById('editAge').value;
+            const stage = document.getElementById('editStage').value;
+            const era = document.getElementById('editEra').value;
+            const prefs = document.getElementById('editPrefs').value;
+            
+            document.getElementById('profileAge').textContent = age;
+            document.getElementById('profileStage').textContent = stage;
+            document.getElementById('profileEra').textContent = era;
+            document.getElementById('profilePrefs').textContent = prefs;
+            
+            cancelProfileEdit();
+            showNotification('Profile updated successfully', 'success');
+        }
+
+        function cancelProfileEdit() {
+            const profileView = document.getElementById('profileView');
+            const profileEdit = document.getElementById('profileEdit');
+            const editBtn = document.getElementById('editProfileBtn');
+            const saveBtn = document.getElementById('saveProfileBtn');
+            const cancelBtn = document.getElementById('cancelProfileBtn');
+            
+            profileView.classList.remove('hidden');
+            profileEdit.classList.add('hidden');
+            editBtn.classList.remove('hidden');
+            saveBtn.classList.add('hidden');
+            cancelBtn.classList.add('hidden');
+        }
+
+        // New feature functions
+        function setMood(emoji, description) {
+            currentMood = { emoji, description, timestamp: new Date().toLocaleString() };
+            document.getElementById('currentMood').textContent = `Current mood: ${emoji} ${description}`;
+            showNotification(`Mood set to ${description}`, 'success');
+        }
+
+        function playRecommendation(title) {
+            showNotification(`Playing ${title}`, 'info');
+            // Could integrate with session system
+        }
+
+        function startEmergencyPlaylist() {
+            startSession('calming');
+            showNotification('Emergency calming playlist started', 'success');
+        }
+
+        // Mode switching functionality
+        function switchMode(mode) {
+            currentMode = mode;
+            const caregiverBtn = document.getElementById('caregiverModeBtn');
+            const therapistBtn = document.getElementById('therapistModeBtn');
+            
+            // Update button styles
+            if (mode === 'caregiver') {
+                caregiverBtn.className = 'bg-white text-indigo-600 px-4 py-2 rounded-lg transition-all font-medium';
+                therapistBtn.className = 'bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition-all';
+                
+                // Show caregiver-specific features
+                showCaregiverMode();
+                showNotification('Switched to Caregiver Mode', 'success');
+            } else {
+                therapistBtn.className = 'bg-white text-indigo-600 px-4 py-2 rounded-lg transition-all font-medium';
+                caregiverBtn.className = 'bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition-all';
+                
+                // Show therapist-specific features
+                showTherapistMode();
+                showNotification('Switched to Therapist Mode', 'success');
+            }
+        }
+
+        function showCaregiverMode() {
+            // Update interface for caregiver mode
+            const recommendations = document.getElementById('recommendations');
+            recommendations.innerHTML = `
+                <div class="p-3 bg-blue-50 rounded-lg cursor-pointer hover:bg-blue-100 transition-all" onclick="playRecommendation('Comfort Music')">
+                    <div class="font-medium text-sm">🎵 Comfort Music</div>
+                    <div class="text-xs text-gray-600">Soothing for daily care</div>
+                </div>
+                <div class="p-3 bg-green-50 rounded-lg cursor-pointer hover:bg-green-100 transition-all" onclick="playRecommendation('Mealtime Melodies')">
+                    <div class="font-medium text-sm">🍽️ Mealtime Melodies</div>
+                    <div class="text-xs text-gray-600">Pleasant dining atmosphere</div>
+                </div>
+                <div class="p-3 bg-purple-50 rounded-lg cursor-pointer hover:bg-purple-100 transition-all" onclick="playRecommendation('Bedtime Calm')">
+                    <div class="font-medium text-sm">🌙 Bedtime Calm</div>
+                    <div class="text-xs text-gray-600">Peaceful evening routine</div>
+                </div>
+            `;
+            
+            // Update session descriptions for caregivers
+            updateSessionDescriptions('caregiver');
+        }
+
+        function showTherapistMode() {
+            // Update interface for therapist mode
+            const recommendations = document.getElementById('recommendations');
+            recommendations.innerHTML = `
+                <div class="p-3 bg-blue-50 rounded-lg cursor-pointer hover:bg-blue-100 transition-all" onclick="playRecommendation('Cognitive Stimulation')">
+                    <div class="font-medium text-sm">🧠 Cognitive Stimulation</div>
+                    <div class="text-xs text-gray-600">Memory & attention exercises</div>
+                </div>
+                <div class="p-3 bg-green-50 rounded-lg cursor-pointer hover:bg-green-100 transition-all" onclick="playRecommendation('Motor Skills')">
+                    <div class="font-medium text-sm">🤲 Motor Skills</div>
+                    <div class="text-xs text-gray-600">Movement & coordination</div>
+                </div>
+                <div class="p-3 bg-purple-50 rounded-lg cursor-pointer hover:bg-purple-100 transition-all" onclick="playRecommendation('Social Interaction')">
+                    <div class="font-medium text-sm">👥 Social Interaction</div>
+                    <div class="text-xs text-gray-600">Group therapy activities</div>
+                </div>
+                <div class="p-3 bg-orange-50 rounded-lg cursor-pointer hover:bg-orange-100 transition-all" onclick="playRecommendation('Assessment Tools')">
+                    <div class="font-medium text-sm">📊 Assessment Tools</div>
+                    <div class="text-xs text-gray-600">Progress evaluation music</div>
+                </div>
+            `;
+            
+            // Update session descriptions for therapists
+            updateSessionDescriptions('therapist');
+        }
+
+        function updateSessionDescriptions(mode) {
+            if (mode === 'caregiver') {
+                sessionData.calming.description = "Easy-to-use calming music for daily caregiving situations";
+                sessionData.memory.description = "Familiar songs to help with daily recognition and comfort";
+                sessionData.social.description = "Simple activities to encourage family interaction";
+            } else {
+                sessionData.calming.description = "Clinical-grade therapeutic music for agitation management";
+                sessionData.memory.description = "Evidence-based reminiscence therapy with structured protocols";
+                sessionData.social.description = "Professional group therapy activities with measurable outcomes";
+            }
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default mode
+            switchMode('caregiver');
+            showNotification('MindfulTunes ready for therapeutic sessions', 'info');
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'979f00df6739f271',t:'MTc1NzAwNDgxMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
